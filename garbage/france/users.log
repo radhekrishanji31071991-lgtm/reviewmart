@@ -1,0 +1,34 @@
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 33
+Phone: 999999999
+IP: 
+Date & Time: 2024-10-25 15:11:34
+API Response:
+{
+    "status": "Success",
+    "data": {
+        "RedirectTo": "https:\/\/tinyurl.com\/2589nvtb",
+        "LoginID": "300c8d8c-5bd3-42dd-a0f5-9ad4425be0ca",
+        "Email": "ramesh@gmail.com",
+        "Password": "An2Vj9Ag",
+        "UserID": "26367739",
+        "BrandID": "3803",
+        "AccountID": "22290179"
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 33
+Phone: 999999999
+IP: 
+Date & Time: 2024-10-25 15:11:52
+API Response:
+{
+    "status": "Failed",
+    "errors": "Country is not allowed"
+}
+=================================================

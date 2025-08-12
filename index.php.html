@@ -1,0 +1,1229 @@
+<?php
+require 'vendor/autoload.php';
+require_once 'helper.php';
+
+use Stichoza\GoogleTranslate\GoogleTranslate;
+
+// Function to get the user's IP address
+$ip = getUserIP();
+
+// ipinfo.io access token below
+$apiToken = '00a1803c35f26a';
+
+try {
+    $response = @file_get_contents("https://ipinfo.io/{$ip}?token={$apiToken}");
+
+    if ($response === false) {
+        throw new Exception("Unable to fetch data from ipinfo.io");
+    }
+
+    $data = json_decode($response, true);
+    $extracted_country_code = $data['country'] ?? throw new Exception("Country code not found");
+} catch (Exception $e) {
+    // Default to 'IN' (India) if there's an error
+    $extracted_country_code = 'IN';
+}
+
+define('IPINFO_COUNTRY_CODE', $extracted_country_code);
+
+$dynamicFunnelName = isset($_GET['dynamic']) ? $_GET['dynamic'] : 'unknown';
+
+$locations = [
+    ['country' => 'Japan', 'country_code' => 'JP', 'language' => 'Japanese', 'language_code' => 'ja'],
+    ['country' => 'Italy', 'country_code' => 'IT', 'language' => 'Italian', 'language_code' => 'it'],
+    ['country' => 'Lithuania', 'country_code' => 'LT', 'language' => 'Lithuanian', 'language_code' => 'lt'],
+    ['country' => 'Netherlands', 'country_code' => 'NL', 'language' => 'Dutch', 'language_code' => 'nl'],
+    ['country' => 'Portugal', 'country_code' => 'PT', 'language' => 'Portuguese', 'language_code' => 'pt'],
+    ['country' => 'Denmark', 'country_code' => 'DK', 'language' => 'Danish', 'language_code' => 'da'],
+    ['country' => 'Greece', 'country_code' => 'GR', 'language' => 'Greek', 'language_code' => 'el'],
+    ['country' => 'Latvia', 'country_code' => 'LV', 'language' => 'Latvian', 'language_code' => 'lv'],
+    ['country' => 'Norway', 'country_code' => 'NO', 'language' => 'Norwegian', 'language_code' => 'no'],
+    ['country' => 'Spain', 'country_code' => 'ES', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Sweden', 'country_code' => 'SE', 'language' => 'Swedish', 'language_code' => 'sv'],
+    ['country' => 'Peru', 'country_code' => 'PE', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Chile', 'country_code' => 'CL', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Colombia', 'country_code' => 'CO', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Argentina', 'country_code' => 'AR', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Mexico', 'country_code' => 'MX', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Zimbabwe', 'country_code' => 'ZW', 'language' => 'Shona', 'language_code' => 'sn'],
+    ['country' => 'Mauritius', 'country_code' => 'MU', 'language' => 'Mauritian', 'language_code' => 'mfe'],
+    ['country' => 'Czech Republic', 'country_code' => 'CZ', 'language' => 'Czech', 'language_code' => 'cs'],
+    ['country' => 'Rwanda', 'country_code' => 'RW', 'language' => 'Kinyarwanda', 'language_code' => 'rw'],
+    ['country' => 'Tanzania', 'country_code' => 'TZ', 'language' => 'Swahili', 'language_code' => 'sw'],
+    ['country' => 'France', 'country_code' => 'FR', 'language' => 'French', 'language_code' => 'fr'],
+    ['country' => 'Morocco', 'country_code' => 'MA', 'language' => 'Arabic', 'language_code' => 'ar'],
+    ['country' => 'Cyprus', 'country_code' => 'CY', 'language' => 'Greek', 'language_code' => 'el'],
+    ['country' => 'Panama', 'country_code' => 'PA', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Paraguay', 'country_code' => 'PY', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Lesotho', 'country_code' => 'LS', 'language' => 'Sotho', 'language_code' => 'st'],
+    ['country' => 'Nicaragua', 'country_code' => 'NI', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Côte d’Ivoire', 'country_code' => 'CI', 'language' => 'French', 'language_code' => 'fr'],
+    ['country' => 'Brunei', 'country_code' => 'BN', 'language' => 'Malay', 'language_code' => 'ms'],
+    ['country' => 'Honduras', 'country_code' => 'HN', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Bosnia & Herzegovina', 'country_code' => 'BA', 'language' => 'Bosnian', 'language_code' => 'bs'],
+    ['country' => 'Montenegro', 'country_code' => 'ME', 'language' => 'Montenegrin', 'language_code' => 'sr'],
+    ['country' => 'Dominican Republic', 'country_code' => 'DO', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Croatia', 'country_code' => 'HR', 'language' => 'Croatian', 'language_code' => 'hr'],
+    ['country' => 'Jordan', 'country_code' => 'JO', 'language' => 'Arabic', 'language_code' => 'ar'],
+    ['country' => 'Belgium', 'country_code' => 'BE', 'language' => 'Dutch', 'language_code' => 'nl'],
+    ['country' => 'Poland', 'country_code' => 'PL', 'language' => 'Polish', 'language_code' => 'pl'],
+    ['country' => 'Hungary', 'country_code' => 'HU', 'language' => 'Hungarian', 'language_code' => 'hu'],
+    ['country' => 'Turkey', 'country_code' => 'TR', 'language' => 'Turkish', 'language_code' => 'tr'],
+    ['country' => 'Brazil', 'country_code' => 'BR', 'language' => 'Portuguese', 'language_code' => 'pt'],
+    ['country' => 'Bulgaria', 'country_code' => 'BG', 'language' => 'Bulgarian', 'language_code' => 'bg'],
+    ['country' => 'Hong Kong', 'country_code' => 'HK', 'language' => 'Chinese', 'language_code' => 'zh'],
+    ['country' => 'Taiwan', 'country_code' => 'TW', 'language' => 'Mandarin Chinese', 'language_code' => 'zh'],
+    ['country' => 'Luxembourg', 'country_code' => 'LU', 'language' => 'French', 'language_code' => 'fr'],
+    ['country' => 'Finland', 'country_code' => 'FI', 'language' => 'Finnish', 'language_code' => 'fi'],
+    ['country' => 'Russia', 'country_code' => 'RU', 'language' => 'Russian', 'language_code' => 'ru'],
+    ['country' => 'Costa Rica', 'country_code' => 'CR', 'language' => 'Spanish', 'language_code' => 'es'],
+    ['country' => 'Estonia', 'country_code' => 'EE', 'language' => 'Estonian', 'language_code' => 'et'],
+    ['country' => 'Ireland', 'country_code' => 'IE', 'language' => 'Irish', 'language_code' => 'ga'],
+    ['country' => 'Slovenia', 'country_code' => 'SI', 'language' => 'Slovenian', 'language_code' => 'sl'],
+    ['country' => 'Slovakia', 'country_code' => 'SK', 'language' => 'Slovak', 'language_code' => 'sk'],
+    ['country' => 'Germany', 'country_code' => 'DE', 'language' => 'German', 'language_code' => 'de'],
+    ['country' => 'Switzerland', 'country_code' => 'CH', 'language' => 'German', 'language_code' => 'de'],
+    ['country' => 'Austria', 'country_code' => 'AT', 'language' => 'German', 'language_code' => 'de']
+];
+
+// Determine the language code based on the extracted country code
+$languageCode = 'en'; // Default language code (e.g., English)
+
+foreach ($locations as $location) {
+    if ($location['country_code'] === IPINFO_COUNTRY_CODE) {
+        $languageCode = $location['language_code'];
+        break;
+    }
+}
+
+define('IPINFO_LANGUAGE_CODE', $languageCode);
+
+/**
+ * Translates the given text to the user's language.
+ *
+ * @param string $text The text to translate.
+ * @return string The translated text.
+ */
+function translateToLanguage($text)
+{
+    // Use the global locations array
+    global $locations;
+
+    // Get the language code
+    $languageCode = IPINFO_LANGUAGE_CODE;
+
+    // Path to the JSON file for cached translations
+    $cacheFile = 'translations_cache.json';
+
+    // Ensure the cache file exists; if not, create it
+    if (!file_exists($cacheFile)) {
+        file_put_contents($cacheFile, json_encode([])); // Initialize as an empty JSON file
+    }
+
+    // Load existing translations from the cache file
+    $translations = json_decode(file_get_contents($cacheFile), true);
+
+    // Check if the translation already exists in the cache
+    if (isset($translations[$languageCode][$text])) {
+        return $translations[$languageCode][$text];
+    }
+
+    try {
+        // Initialize GoogleTranslate
+        $translator = new GoogleTranslate();
+        $translator->setTarget($languageCode); // Set target language
+
+        // Translate the text
+        $translatedText = $translator->translate($text);
+
+        // Save the new translation to the cache
+        if (!isset($translations[$languageCode])) {
+            $translations[$languageCode] = [];
+        }
+        $translations[$languageCode][$text] = $translatedText;
+
+        // Save the updated cache back to the file
+        file_put_contents($cacheFile, json_encode($translations, JSON_PRETTY_PRINT));
+
+        return $translatedText;
+    } catch (Exception $e) {
+        // In case of any error, return the original text
+        return $text;
+    }
+}
+
+// Example usage:
+// echo translateToLanguage("Hello, world!");
+?>
+
+<!doctype html>
+<html lang="en" style="overflow-x:hidden;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> <?php
+            echo htmlspecialchars($dynamicFunnelName === 'unknown' ? '' : $dynamicFunnelName);
+            ?> </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style></style>
+    <link rel="stylesheet" href="style.css">
+    <!-- Add Font Awesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- Title -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" style="font-size: 0.8rem">
+                Top Reviews
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#mainForm">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#mainForm">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#mainForm">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div style="background: linear-gradient(135deg, #004e45, #1a8276);">
+        <div class="align-items-center justify-content-center container overflow-hidden p-2 p-sm-5">
+            <div class="row align-items-center w-full">
+
+                <!-- Left Column: Content -->
+                <div class="col-md-7 text-md-start text-center text-white">
+                    <span class="fw-bold responsive-title " style="font-size:3rem;">
+                        <?php
+                        echo htmlspecialchars($dynamicFunnelName === 'unknown' ? 'Eclipse Earn' : $dynamicFunnelName);
+                        ?>
+                    </span>
+                    <p class="mt-3  ">
+                        <?php echo translateToLanguage("This platform is your reliable partner in profitable investments! Start investing right now to build your passive income and gain financial independence. Don’t miss your chance to change your life forever and make your money work!"); ?>
+                    </p>
+                </div>
+
+                <!-- Right Column: Form -->
+                <div class="col-md-5">
+                    <div class="bg-white p-4 rounded-5 shadow">
+                        <form id="mainForm" method="POST">
+                            <div id="errorMsg" class="alert alert-danger d-none" role="alert"></div>
+
+                            <div class="mb-3">
+                                <label for="firstname" class="form-label">
+                                    <?php echo translateToLanguage("First Name"); ?>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-user text-success"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="firstname" name="firstname"
+                                        placeholder="<?php echo translateToLanguage("First Name"); ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="lastname" class="form-label">
+                                    <?php echo translateToLanguage("Last Name"); ?>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-user text-success"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="lastname" name="lastname"
+                                        placeholder="<?php echo translateToLanguage("Last Name"); ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <?php echo translateToLanguage("Phone number"); ?>
+                                </label>
+                                <div class="input-group">
+                                    <div class="country-select">
+                                        <input type="hidden" id="phone_code" name="phone_code" required>
+                                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <span class="selected-country">
+                                                <?php echo translateToLanguage("Select Country"); ?>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <!-- Country options will be inserted here by JavaScript -->
+                                        </ul>
+                                    </div>
+                                    <input type="tel" class="form-control" id="phone" name="phone"
+                                        placeholder="<?php echo translateToLanguage("Your Phone Number"); ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <?php echo translateToLanguage("Email"); ?>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-envelope text-success"></i>
+                                    </span>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                                        required>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="dynamicFunnelName"
+                                value="<?php echo htmlspecialchars($dynamicFunnelName); ?>">
+
+                            <button type="submit" id="sbtbtn" class="btn btn-custom p-2 w-100 text-white">
+                                <span style="font-size: 18px;"><?php echo translateToLanguage("REGISTER NOW"); ?></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="custom-section py-5 bg-light">
+            <div class="d-flex justify-content-center">
+                <div class="p-5 bg-white rounded-4 text-container" style="max-width: 1000px;">
+                    <h2 class="text-center font-weight-bold mb-4" style="font-size: 2.5rem; font-weight: 900;">
+                        <?php echo translateToLanguage("How does this Platform Work?"); ?>
+                    </h2>
+
+                    <p class="text-center mb-3">
+                        <?php echo translateToLanguage("First of all, this platform offers its users a unique opportunity to invest and receive exclusive offers profitably. This will give you the most positive results and allow you to get a large capital."); ?>
+                    </p>
+                    <p class="text-center mb-3">
+                        <?php echo translateToLanguage("The key feature of this platform presence of a unique investment strategy that is used on this platform. Thanks to it, you can watch the analysis of many emerging companies in real-time. It remains only to choose a suitable option and invest large sums of money for profit."); ?>
+                    </p>
+                    <p class="text-center mb-3">
+                        <?php echo translateToLanguage("Among the key features of this platform is the presence of unique tools for analyzing and diversifying capital. Thanks to this, even a beginner without much experience can make the right decisions that will be justified in terms of investment."); ?>
+                    </p>
+                    <p class="text-center mb-4">
+                        <?php echo translateToLanguage("That is why we can recommend you register on this platform right now to start your journey as an investor. This is your opportunity to forget financial limitations and start building your passive, stable investment earnings."); ?>
+                    </p>
+                    <div class="text-center">
+                        <a href="#mainForm" style="text-decoration: none;">
+                            <button class="btn btn-custom px-4 py-2">
+                                <span style="font-size: 22px;"><?php echo translateToLanguage("Register Now"); ?></span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class=" text-white custom-section" style="background-color: #004e45;">
+            <div class="container">
+                <h2 class="text-center fw-bolder mb-4" style="font-size: 3rem;">
+                    <?php echo translateToLanguage("This Platform that Will Change the Life of Every Investor"); ?>
+                </h2>
+                <p class="text-center mb-3" style="font-size: 1.2rem;">
+                    <?php echo translateToLanguage("With this wide range of available features, you can start taking advantage of this platform's unique tools and available charts. This will allow you to maximize the efficiency of your investments and choose only those companies that deserve your attention."); ?>
+                </p>
+                <p class="text-center mb-0" style="font-size: 1.2rem;">
+                    <?php echo translateToLanguage("Proceed to registration and find the best investment options for you in this extensive catalog of unique startups."); ?>
+                </p>
+
+            </div>
+        </section>
+
+        <section class="top-bottom-padding-2">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Column: Image -->
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="mb-4 text-white" style="font-size: 2.4rem; line-height: 1.8; font-weight: 700;">
+                            <?php echo translateToLanguage("Sign Up Now to Earn Money"); ?>
+                        </h2>
+
+                        <img src="invest-max.png" alt="Sign Up" class="img-fluid rounded-4 shadow">
+                    </div>
+                    <!-- Right Column: Steps -->
+                    <div class="col-lg-6">
+
+                        <div class="p-4 bg-white rounded-4 shadow">
+                            <h5 class="fw-bold" style="font-size: 1.2rem; line-height: 1.8;"> <?php echo translateToLanguage("Create an Account Quickly"); ?></h5>
+                            <div class="steps-container">
+                                <div class="step">
+                                    <div class="step-icon text-success"></div>
+                                    <div class="step-content" style="font-size: 1.1rem; line-height: 1.8;">
+                                        <span class="fw-bold"><?php echo translateToLanguage("Step 1:"); ?></span>
+                                        <?php echo translateToLanguage("First, go to the official platform website and open the registration form on the button below."); ?>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon text-success"></div>
+                                    <div class="step-content" style="font-size: 1.1rem; line-height: 1.8;">
+                                        <span class="fw-bold"><?php echo translateToLanguage("Step 2:"); ?></span>
+                                        <?php echo translateToLanguage("Start filling out the form with your real data. Enter your personal information, email, phone number, and other important details."); ?>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon text-success"></div>
+                                    <div class="step-content" style="font-size: 1.1rem; line-height: 1.8;">
+                                        <span class="fw-bold"><?php echo translateToLanguage("Step 3:"); ?></span>
+                                        <?php echo translateToLanguage("After completing the registration, confirm your identity and start investing."); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <h5 class="fw-bold mt-4" style="font-size: 1.2rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("Start Investing Profitably"); ?>
+                            </h5>
+                            <div class="steps-container">
+                                <div class="step">
+                                    <div class="step-icon text-success"></div>
+                                    <div class="step-content" style="font-size: 1.1rem; line-height: 1.8;">
+                                        <span class="fw-bold"><?php echo translateToLanguage("Step 4:"); ?></span>
+                                        <?php echo translateToLanguage("Go to the general catalog of investment plans and choose that suits you."); ?>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon text-success"></div>
+                                    <div class="step-content" style="font-size: 1.1rem; line-height: 1.8;">
+                                        <span class="fw-bold"><?php echo translateToLanguage("Step 5:"); ?></span>
+                                        <?php echo translateToLanguage("Carefully read the terms and features of each plan to choose the right option that meets your requirements and budget."); ?>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon text-success"></div>
+                                    <div class="step-content" style="font-size: 1.1rem; line-height: 1.8;">
+                                        <span class="fw-bold"><?php echo translateToLanguage("Step 6:"); ?></span>
+                                        <?php echo translateToLanguage("Sign the contract and start investing. In your account, you will be able to track the status of your investments in real time."); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="py-5" style="background-color: #004e45;">
+            <div class="container text-white text-center">
+                <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">
+                    <?php echo translateToLanguage("What You Need to Know About this Platform"); ?>
+                </h2>
+                <p class="mb-4" style="font-size: 1.2rem; font-weight: 400;">
+                    <?php echo translateToLanguage("A PLATFORM WITH EXCLUSIVE OFFERS"); ?>
+                </p>
+                <p class="mb-5" style="font-size: 1rem;">
+                    <?php echo translateToLanguage("First, the site has many unique offers, allowing you to earn as much as possible with minimal investment. The most profitable and unique strategies. This will allow you to maximize your funds."); ?>
+                </p>
+            </div>
+            <div class="container">
+                <div class="row gy-4">
+                    <!-- Card 1 -->
+                    <div class="col-12">
+                        <div class="p-5 bg-white rounded-4 shadow-sm d-flex align-items-center">
+                            <div class="me-4 d-none d-md-block">
+                                <img src="benefit-icon.svg" alt="<?php echo translateToLanguage("Benefit Icon"); ?>" class="img-fluid" style="width: 140px;">
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-3" style="font-size: 1.5rem;">
+                                    <?php echo translateToLanguage("MAXIMUM BENEFIT FROM EACH INVESTED DOLLAR"); ?>
+                                </h5>
+                                <p style="font-size: 1.1rem; line-height: 1.8;">
+                                    <?php echo translateToLanguage("A great advantage of this is the ability to choose short-term and long-term options for investment plans. Thanks to this, you can decide on the most suitable option for you and start investing at a high rate of speed. It will also allow you to maximize the efficiency of different investment strategies."); ?>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="col-12">
+                        <div class="p-5 bg-white rounded-4 shadow-sm d-flex align-items-center">
+                            <div class="me-4 d-none d-md-block">
+                                <img src="personal-cabinet-icon.svg" alt="<?php echo translateToLanguage("Personal Cabinet Icon"); ?>" class="img-fluid" style="width: 140px;">
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-3" style="font-size: 1.5rem;">
+                                    <?php echo translateToLanguage("SIMPLE AND CLEAR PERSONAL CABINET"); ?>
+                                </h5>
+                                <p style="font-size: 1.1rem; line-height: 1.8;">
+                                    <?php echo translateToLanguage("It will be easy for beginners to understand the this service because this platform is created specifically for investors. It will allow you to choose suitable investment options and start investing. You will also be able to monitor statistics, analyze data, and see the accumulated profit in this personal cabinet."); ?>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="#mainForm" style="text-decoration: none;">
+                        <button class="btn btn-custom px-4 py-2">
+                            <span style="font-size: 22px;">
+                                <?php echo translateToLanguage("Get Started"); ?>
+                            </span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="top-bottom-padding-2">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Column: Text -->
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="fw-bold mb-4 text-white" style="font-size: 2.5rem;">
+                            <?php echo translateToLanguage("What is Investing?"); ?>
+                        </h2>
+                        <p class=" text-white" style="font-size: 1.1rem; line-height: 1.8;">
+                            <?php echo translateToLanguage("First of all, it is an opportunity to invest money that suit you and get profit from their activity at the end of the contract. Such transparent conditions allow you to expand your capital and earn even in a crisis. Choose a project on this platform and start investing money, taking risks, and getting a large percentage of profit for it."); ?>
+                        </p>
+                    </div>
+                    <!-- Right Column: Image -->
+                    <div class="col-lg-6">
+                        <img src="invest-max-2.png" alt="<?php echo translateToLanguage("Investment Chart"); ?>" class="img-fluid rounded-4 shadow">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <section class="py-5">
+            <div class="container">
+                <div class="text-center mb-5  text-white">
+                    <h2 class="fw-bold mb-3 " style="font-size: 3rem;">
+                        <?php echo translateToLanguage("Important Features of this Platform"); ?>
+                    </h2>
+                    <p style="font-size: 1.3rem; line-height: 1.9;">
+                        <?php echo translateToLanguage("The developed this service allows even beginners without much experience to start working with complex. Thanks to this, your profit percentage will significantly differ from classic investment strategies. It is enough to choose a plan that suits you and start working."); ?>
+                    </p>
+                    <p style="font-size: 1.3rem; line-height: 1.9;">
+                        <?php echo translateToLanguage("That's why we tell you more about all the features of this platform, which will help you earn more."); ?>
+                    </p>
+                </div>
+                <div class="row align-items-center">
+                    <!-- Left Column: Image -->
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <img src="invest-max-3.png" alt="<?php echo translateToLanguage("Platform Features"); ?>" class="img-fluid rounded-4 shadow">
+                    </div>
+                    <!-- Right Column: Accordion -->
+                    <div class="col-lg-6">
+                        <h4 class="fw-bold mb-4  text-white" style="font-size: 2rem;">
+                            <?php echo translateToLanguage("Key Features of this Platform:"); ?>
+                        </h4>
+                        <div class="accordion" id="featuresAccordion">
+                            <!-- Accordion Item 1 -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <?php echo translateToLanguage("Exclusivity"); ?>
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                    data-bs-parent="#featuresAccordion">
+                                    <div class="accordion-body" style="font-size: 1.2rem; line-height: 1.8;">
+                                        <?php echo translateToLanguage("Thanks to the long history of the service, everyone can find the perfect project on this platform for their budget and requirements. You can find unique offers in the catalog that will suit you according to several criteria. Thanks to the sorting tools, choose the best options. This will help you earn more on this with similar investments than with a simple investment."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Accordion Item 2 -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        <?php echo translateToLanguage("Profitable Strategies"); ?>
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                    data-bs-parent="#featuresAccordion">
+                                    <div class="accordion-body" style="font-size: 1.2rem; line-height: 1.8;">
+                                        <?php echo translateToLanguage("A specially developed strategy helps this users to make the right decisions and work with different investment options. Thanks to this, the system will independently analyze a lot of criteria and choose the most suitable for you. This will help you earn more on your activity and earn additional income."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Accordion Item 3 -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        <?php echo translateToLanguage("Useful Tools"); ?>
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                                    data-bs-parent="#featuresAccordion">
+                                    <div class="accordion-body" style="font-size: 1.2rem; line-height: 1.8;">
+                                        <?php echo translateToLanguage("The site also offers many unique tools to help beginners choose a strategy that suits them. It is enough to go to the analysis section and select you are interested in. Thanks to this, you can see all the useful information about historical and current data."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="py-5  text-white">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Column: Text -->
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="fw-bold mb-4" style="font-size: 2.5rem;">
+                            <?php echo translateToLanguage("Why do I Need Investments?"); ?>
+                        </h2>
+                        <p style="font-size: 1.2rem; line-height: 1.8;">
+                            <?php echo translateToLanguage("First of all, investment activities on this will be of interest to users who want to maximize success in a short period. It allows you to use various unique strategies and find optimal investment options. Investing allows you to maximize your capital and make your money work for you."); ?>
+                        </p>
+                        <p style="font-size: 1.2rem; line-height: 1.8;">
+                            <?php echo translateToLanguage("It is also important to realize that your money depreciates over time. Because of this, your purchasing power decreases, and the amount you can potentially buy decreases. Therefore, you need to constantly work with this platform and create new variations of useful strategies. This will eventually allow you to beat inflation and make money."); ?>
+                        </p>
+                        <p style="font-size: 1.2rem; line-height: 1.8;">
+                            <?php echo translateToLanguage("Investments are also important for users who don’t want to run their business for the rest of their lives. With this, you will be able to choose some exciting projects and start investing with excellent efficiency."); ?>
+                        </p>
+                        <p style="font-size: 1.2rem; line-height: 1.8;">
+                            <?php echo translateToLanguage("Start choosing the investment that are right for you right now on this website!"); ?>
+                        </p>
+                    </div>
+                    <!-- Right Column: Image -->
+                    <div class="col-lg-6">
+                        <img src="invest-max-4.png" alt="<?php echo translateToLanguage("Investment Benefits"); ?>" class="img-fluid rounded-4 shadow">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="py-5 " style="background-color: #004e45;">
+            <div class="container text-center text-white mb-5">
+                <h2 class="fw-bold" style="font-size: 2.5rem;">
+                    <?php echo translateToLanguage("How to Maximize Your Return on Investment"); ?>
+                </h2>
+                <p class="mt-3" style="font-size: 1.2rem; line-height: 1.8;">
+                    <?php echo translateToLanguage("To do this, you will need to work a lot with analytics and be able to allocate your capital correctly."); ?>
+                </p>
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    <?php echo translateToLanguage("Thanks to this, you can take advantage of the best possible offers without losing time and get the maximum return on your investment. Here are some important rules that you need to keep in mind when working with this investments."); ?>
+                </p>
+            </div>
+            <div class="container">
+                <div class="row gy-4">
+                    <!-- Card 1 -->
+                    <div class="col-lg-6">
+                        <div class="p-4 bg-white rounded-4 shadow-sm">
+                            <h5 class="fw-bold mb-3" style="font-size: 1.5rem;">
+                                <?php echo translateToLanguage("ANALYSIS"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("You need to keep your investment portfolio under control at all times. Therefore, the best solution is to analyze the state of your investment constantly. You must look at the charts and predict further rises or falls to make the right decisions. This will make it easier for you to cope with the ever-changing market."); ?>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="col-lg-6">
+                        <div class="p-4 bg-white rounded-4 shadow-sm">
+                            <h5 class="fw-bold mb-3" style="font-size: 1.5rem;">
+                                <?php echo translateToLanguage("MAKING THE RIGHT DECISIONS"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("Great attention should be paid to your decisions to buy and sell on this platform. Often, beginners in the investing field may make impulsive transactions, which, on a long distance, lead only to losses. Thinking over your strategy in advance and working systematically and consistently is necessary. Thanks to this, you will make significantly fewer mistakes."); ?>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="col-lg-6">
+                        <div class="p-4 bg-white rounded-4 shadow-sm">
+                            <h5 class="fw-bold mb-3" style="font-size: 1.5rem;">
+                                <?php echo translateToLanguage("DIVERSIFICATION OF INVESTMENT RISKS"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("It is best to reduce some of the returns of your investment portfolio to increase capital protection in case of market fluctuations or crises. Thanks to diversification, your portfolio will partially consist of conservative investment that do not generate large profits but, at the same time, cannot depreciate too much. This approach is practiced even by the largest investment funds."); ?>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="col-lg-6">
+                        <div class="p-4 bg-white rounded-4 shadow-sm">
+                            <h5 class="fw-bold mb-3" style="font-size: 1.5rem;">
+                                <?php echo translateToLanguage("USING THIS PLATFORM"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("Use this platform because it is the best solution for every investor. Thanks to it, you will be able to access all the tools mentioned above and, at the same time, increase your chances of successfully realizing capital. You will have a whole catalog of investment offers that will increase profit percentages. This is the best solution for investors."); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="#mainForm" style="text-decoration: none;">
+                    <button class="btn btn-custom px-4 py-2">
+                        <span style="font-size: 22px;">
+                            <?php echo translateToLanguage("Register Now"); ?>
+                        </span>
+                    </button>
+                </a>
+            </div>
+        </section>
+
+
+
+
+        <section class="py-5 ">
+            <div class="container text-center  text-white">
+                <!-- Section Header -->
+                <h2 class="fw-bold mb-3" style="font-size: 2.5rem;">
+                    <?php echo translateToLanguage("How to Make a Guaranteed Profit on Investing?"); ?>
+                </h2>
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    <?php echo translateToLanguage("To do this, you need to minimize your risks as much as possible by using the useful tools of this platform. First of all, there are unique strategies used on the site. Experts independently select the most suitable investment that can bring big profits."); ?>
+                </p>
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    <?php echo translateToLanguage("Thanks to this distribution of work, investors only have to choose a plan that suits them and start investing in this. As a result, you will be able to come to success and get the maximum amount of money for each invested dollar."); ?>
+                </p>
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    <?php echo translateToLanguage("Try to learn the basic aspects of investing as soon as possible to achieve maximum success on this platform."); ?>
+                </p>
+            </div>
+            <div class="container border p-5 mt-5">
+                <h4 class="fw-bold text-center mb-4 text-white" style="font-size: 2rem;">
+                    <?php echo translateToLanguage("Here are the Important Aspects of Investing:"); ?>
+                </h4>
+                <div class="row g-4">
+                    <!-- Card 1 -->
+                    <div class="col-md-4">
+                        <div class="p-4 bg-white rounded-4 text-center">
+                            <div class="mb-3">
+                                <img src="analytics-icon.svg" alt="<?php echo translateToLanguage("Analytics Icon"); ?>" style="width: 60px; border-radius: 5px;">
+                            </div>
+                            <h5 class="fw-bold mb-3" style="font-size: 1.3rem;">
+                                <?php echo translateToLanguage("Analytics"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("It is important to properly analyze all the characteristics of investment on this to choose only the most suitable coins for you and invest in them."); ?>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="col-md-4">
+                        <div class="p-4 bg-white rounded-4 text-center">
+                            <div class="mb-3">
+                                <img src="diversification-icon.svg" alt="<?php echo translateToLanguage("Diversification Icon"); ?>" style="width: 60px; border-radius: 5px;">
+                            </div>
+                            <h5 class="fw-bold mb-3" style="font-size: 1.3rem;">
+                                <?php echo translateToLanguage("Diversification"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("It is necessary to use safely and allocate capital between coins."); ?>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="col-md-4">
+                        <div class="p-4 bg-white rounded-4 text-center">
+                            <div class="mb-3">
+                                <img src="profitability-icon.svg" alt="<?php echo translateToLanguage("Profitability Icon"); ?>" style="width: 60px; border-radius: 5px;">
+                            </div>
+                            <h5 class="fw-bold mb-3" style="font-size: 1.3rem;">
+                                <?php echo translateToLanguage("Profitability Assessment"); ?>
+                            </h5>
+                            <p style="font-size: 1.1rem; line-height: 1.8;">
+                                <?php echo translateToLanguage("The investor's task is always to balance the possible profits and potential risks of investing."); ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="top-bottom-padding-2  text-white">
+            <div class="container">
+                <div class="row align-items-center">
+                    <!-- Left Column: Text and Image -->
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="fw-bold mb-4" style="font-size: 2.5rem;">
+                            <?php echo translateToLanguage("What Will I Get from Working with this Platform?"); ?>
+                        </h2>
+                        <p style="font-size: 1.2rem; line-height: 1.8;">
+                            <?php echo translateToLanguage("With this platform, you will get useful tools and expert support. You can also take advantage of convenient and already formed investment plans. Thanks to this platform. It will always be the most reliable and exciting from an investment point of view."); ?>
+                        </p>
+                        <div class="mt-4">
+                            <img src="invest-max-5.png" alt="<?php echo translateToLanguage("Investment Benefits"); ?>" class="img-fluid rounded-4 shadow">
+                        </div>
+                    </div>
+                    <!-- Right Column: Advantages List -->
+                    <div class="col-lg-6">
+                        <h4 class="fw-bold mb-4" style="font-size: 1.2rem;">
+                            <?php echo translateToLanguage("Here are the Main Advantages of Working with this Platform"); ?>
+                        </h4>
+                        <ul class="list-unstyled" style="font-size: 1.2rem; line-height: 1.8;">
+                            <li class="d-flex align-items-start mb-3">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.5rem;"></i>
+                                <?php echo translateToLanguage("A large number of coins to choose from."); ?>
+                            </li>
+                            <li class="d-flex align-items-start mb-3">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.5rem;"></i>
+                                <?php echo translateToLanguage("Already ready-made investment plans that experts have diversified."); ?>
+                            </li>
+                            <li class="d-flex align-items-start mb-3">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.5rem;"></i>
+                                <?php echo translateToLanguage("Exclusive terms of cooperation with various emerging companies that will allow you to earn more profits."); ?>
+                            </li>
+                            <li class="d-flex align-items-start mb-3">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.5rem;"></i>
+                                <?php echo translateToLanguage("Opportunity to get help from financial experts on any questions."); ?>
+                            </li>
+                            <li class="d-flex align-items-start mb-3">
+                                <i class="fas fa-check-circle text-success me-3" style="font-size: 1.5rem;"></i>
+                                <?php echo translateToLanguage("Convenient personal cabinet and analytics tools."); ?>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <section class="py-5  text-white">
+            <div class="container border p-5" style="border-radius:15px;">
+                <div class="text-center">
+                    <!-- Heading -->
+                    <h2 class="fw-bold mb-4" style="font-size: 2.5rem;">
+                        <?php echo translateToLanguage("What is the Main Feature?"); ?>
+                    </h2>
+                    <!-- Paragraphs -->
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        <?php echo translateToLanguage("This platform has many useful tools for analysis, which are perfectly combined with an extended catalog of available coins. Thanks to this, everyone can easily choose an investment plan that suits their needs and analyze it qualitatively."); ?>
+                    </p>
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        <?php echo translateToLanguage("This will also help you maximize the excellent opportunities available, even for investors without much capital or experience."); ?>
+                    </p>
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        <?php echo translateToLanguage("A unique feature of this is its simple site architecture and easy-to-understand money management. Thanks to this, you will find it very convenient to cooperate with the service, and you will be able to expand your opportunities as an investor quickly. It is enough to learn how to use all the useful tools of this platform and earn large sums on it."); ?>
+                    </p>
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        <?php echo translateToLanguage("You can quickly achieve the desired result and maximize efficiency from each invested dollar. That's why you should register for this service as soon as possible."); ?>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <div class="py-5">
+
+            <section class="py-5" style="background-color: #2c3e50; color: white;">
+                <div class="container text-center">
+                    <!-- Heading -->
+                    <h2 class="fw-bold mb-4" style="font-size: 2.5rem;">
+                        <?php echo translateToLanguage("Completion"); ?>
+                    </h2>
+                    <!-- Paragraphs -->
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        <?php echo translateToLanguage("This platform offers every user to become an investor and invest in the most promising coins. The developed artificial intelligence system selects suitable companies based on various factors. Thanks to this, you can not worry about your capital and gradually reach new heights by investing."); ?>
+                    </p>
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        <?php echo translateToLanguage("This extremely profitable investment will allow you to succeed and ensure financial stability. Therefore, we recommend you to register on this platform right now and start your activity. Do not miss the opportunity to give up your routine and engage in a profitable business."); ?>
+                    </p>
+
+                    <a href="#mainForm" style="text-decoration: none;">
+                        <button class="btn btn-light px-4 py-2">
+                            <span style="font-size: 22px;">
+                                <?php echo translateToLanguage("Get Started"); ?>
+                            </span>
+                        </button>
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <section class="py-5">
+            <div class="container">
+                <h2 class="fw-bold text-center mb-5 text-white" style="font-size: 2.5rem;">
+                    <?php echo translateToLanguage("FAQ"); ?>
+                </h2>
+                <div class="row g-4">
+                    <!-- FAQ Item 1 -->
+                    <div class="col-md-6">
+                        <div class="accordion" id="faqAccordion1">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeadingOne1">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseOne1" aria-expanded="true" aria-controls="faqCollapseOne1">
+                                        <?php echo translateToLanguage("Is This Platform Really Free?"); ?>
+                                    </button>
+                                </h2>
+                                <div id="faqCollapseOne1" class="accordion-collapse collapse show" aria-labelledby="faqHeadingOne1" data-bs-parent="#faqAccordion1">
+                                    <div class="accordion-body">
+                                        <?php echo translateToLanguage("This platform is available to everyone at no extra charge. Thanks to this, you can use all the useful features and try different tool options. You will find a friendly interface and the opportunity to increase your profits several times."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="col-md-6">
+                        <div class="accordion" id="faqAccordion2">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeadingTwo2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseTwo2" aria-expanded="false" aria-controls="faqCollapseTwo2">
+                                        <?php echo translateToLanguage("Can I Make Money On This Platform?"); ?>
+                                    </button>
+                                </h2>
+                                <div id="faqCollapseTwo2" class="accordion-collapse collapse" aria-labelledby="faqHeadingTwo2" data-bs-parent="#faqAccordion2">
+                                    <div class="accordion-body">
+                                        <?php echo translateToLanguage("Anyone can start investing on this in the most profitable investment, choosing only profitable ones. Thanks to this, you will be able to achieve success extremely quickly. The main thing is to use your capital correctly and gradually achieve new results."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="col-md-6">
+                        <div class="accordion" id="faqAccordion3">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeadingThree3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseThree3" aria-expanded="false" aria-controls="faqCollapseThree3">
+                                        <?php echo translateToLanguage("How Difficult Is It To Work?"); ?>
+                                    </button>
+                                </h2>
+                                <div id="faqCollapseThree3" class="accordion-collapse collapse" aria-labelledby="faqHeadingThree3" data-bs-parent="#faqAccordion3">
+                                    <div class="accordion-body">
+                                        <?php echo translateToLanguage("Investing with this platform is much easier than when you do it alone. Thanks to the availability of many simple tools that will help you make the right decisions and intelligently use the situation. That’s why we recommend that you try out this as soon as possible."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="col-md-6">
+                        <div class="accordion" id="faqAccordion4">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="faqHeadingFour4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapseFour4" aria-expanded="false" aria-controls="faqCollapseFour4">
+                                        <?php echo translateToLanguage("What Are The Most Profitable Investment On This Platform?"); ?>
+                                    </button>
+                                </h2>
+                                <div id="faqCollapseFour4" class="accordion-collapse collapse" aria-labelledby="faqHeadingFour4" data-bs-parent="#faqAccordion4">
+                                    <div class="accordion-body">
+                                        <?php echo translateToLanguage("To find out, use the unique system of data study on this platform. Thanks to this, you will be able to see analytical information on each direction and choose the best option for investment."); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="top-bottom-padding-2">
+            <div class="container">
+                <h2 class="fw-bold text-center text-white mb-5" style="font-size: 2.5rem;">
+                    <?php echo translateToLanguage("Highlights"); ?>
+                </h2>
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="bg-white rounded-4 p-5 shadow-sm">
+                            <div class="row">
+                                <!-- Left Column: Labels and Icons -->
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="d-flex align-items-center mb-4">
+                                            <img src="1.svg" alt="<?php echo translateToLanguage("Categorization Icon"); ?>" style="width: 40px;" class="me-3">
+                                            <span class="fw-bold text-secondary" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Categorization of platforms"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <img src="2.svg" alt="<?php echo translateToLanguage("Platform Type Icon"); ?>" style="width: 40px;" class="me-3">
+                                            <span class="fw-bold text-secondary" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Platform Type"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <img src="3.svg" alt="<?php echo translateToLanguage("Platform Cost Icon"); ?>" style="width: 40px;" class="me-3">
+                                            <span class="fw-bold text-secondary" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Platform Cost"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <img src="4.svg" alt="<?php echo translateToLanguage("Fee Policy Icon"); ?>" style="width: 40px;" class="me-3">
+                                            <span class="fw-bold text-secondary" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Fee Policy"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="d-flex align-items-center mb-4">
+                                            <img src="5.svg" alt="<?php echo translateToLanguage("Deposit Options Icon"); ?>" style="width: 40px;" class="me-3">
+                                            <span class="fw-bold text-secondary" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Deposit options"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <img src="6.svg" alt="<?php echo translateToLanguage("Countries Icon"); ?>" style="width: 40px;" class="me-3">
+                                            <span class="fw-bold text-secondary" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Countries"); ?>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- Right Column: Values -->
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled mt-3">
+                                        <li class="mb-4">
+                                            <span class="text-muted" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Online investment platform"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="mb-4">
+                                            <span class="text-muted" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Investing in coins"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="mb-4">
+                                            <span class="text-muted" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("It's free"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="mb-4">
+                                            <span class="text-muted" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("No charge"); ?>
+                                            </span>
+                                        </li>
+                                        <li class="mb-4">
+                                            <span class="text-muted" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Credit cards, payment systems, debit cards and all method"); ?>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="text-muted" style="font-size: 1.1rem;">
+                                                <?php echo translateToLanguage("Available in Selected Countries"); ?>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <?php
+        echo '<div style="color: skyblue;">';
+        echo $ip;
+        echo "<br>";
+        echo IPINFO_COUNTRY_CODE;
+        echo '</div>';
+        ?>
+
+        <footer class="bg-dark text-white py-4">
+            <div class="container">
+                <!-- Top Section -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center border-bottom pb-3 mb-3">
+                    <!-- Logo and Name -->
+                    <div class="d-flex align-items-center mb-3 mb-md-0">
+                        <h5 class="fw-bold mb-0">
+                            <?php echo translateToLanguage("Top Reviews"); ?>
+                        </h5>
+                    </div>
+                    <!-- Navigation Links -->
+                    <nav>
+                        <ul class="list-unstyled d-flex flex-wrap justify-content-center mb-0">
+                            <li class="mx-2"><a href="#mainForm" class="text-white text-decoration-none"><?php echo translateToLanguage("Home"); ?></a></li>
+                            <li class="mx-2"><a href="#mainForm" class="text-white text-decoration-none"><?php echo translateToLanguage("About"); ?></a></li>
+                            <li class="mx-2"><a href="#mainForm" class="text-white text-decoration-none"><?php echo translateToLanguage("Contact"); ?></a></li>
+                            <li class="mx-2"><a href="#mainForm" class="text-white text-decoration-none"><?php echo translateToLanguage("Login"); ?></a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Risk Note -->
+                <div class="mb-4">
+                    <h6 class="fw-bold"><?php echo translateToLanguage("Important Risk Note:"); ?></h6>
+                    <p class="small mb-2">
+                        <?php echo translateToLanguage("As with any form of investing, there’s an inherent level of risk that comes with trading in the coin market. There are no guarantees when it comes to wins and losses, but it should be expected that your portfolio could go one way or the other at any time."); ?>
+                    </p>
+                    <p class="small mb-2">
+                        <?php echo translateToLanguage("The coin industry is known to be extremely volatile, so it’s important that you proceed with caution as you start placing trades. About 70% of all investors experience one or more losses in their trading career."); ?>
+                    </p>
+                    <p class="small mb-2">
+                        <?php echo translateToLanguage("Before moving forward, make sure to review our Terms and Conditions documentation, as well as our privacy policy. The dissemination of marketing materials pertaining to CFDs is prohibited by the FCA, and this is primarily geared toward UK residents."); ?>
+                    </p>
+                    <p class="small">
+                        <?php echo translateToLanguage("By signing up, you’re also consenting to sharing personal information with necessary third parties. This aligns with our Terms and Conditions and Privacy Policy."); ?>
+                    </p>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <!-- Copyright -->
+                    <p class="small mb-3 mb-md-0">
+                        <?php echo translateToLanguage("© 2025 All Rights Reserved"); ?>
+                    </p>
+                    <!-- Terms and Privacy Links -->
+                    <div>
+                        <a href="./terms.php" class="text-white text-decoration-none me-3"><?php echo translateToLanguage("Terms"); ?></a>
+                        <a href="./privacy-policy.php" class="text-white text-decoration-none"><?php echo translateToLanguage("Privacy Policy"); ?></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+        <script>
+            $(document).ready(function() {
+                // Country data
+                fetch('./countries.json')
+                    .then(response => response.json())
+                    .then(countries => {
+                        const dropdownMenu = $('.country-select .dropdown-menu');
+                        countries.forEach(country => {
+                            const flagUrl = `https://flagcdn.com/w20/${country.code.toLowerCase()}.png`;
+                            dropdownMenu.append(`
+                            <li>
+                                <div class="country-option" data-code="${country.code}" data-dial-code="${country.dialCode}">
+                                    <img src="${flagUrl}" alt="${country.name} flag">
+                                    (+${country.dialCode}) ${country.name}
+                                </div>
+                            </li>
+                        `);
+                        });
+                    }).then(() => {
+                        const countryOption = $(`.country-option[data-code="<?php echo IPINFO_COUNTRY_CODE; ?>"]`);
+                        if (countryOption.length) {
+                            countryOption.click();
+                        }
+                    })
+                    .catch(error => console.error('Error loading countries:', error));
+
+                // Event delegation to handle dynamically added elements
+                $(document).on('click', '.country-option', function() {
+                    const code = $(this).data('code'); // Get the country code
+                    const dialCode = $(this).data('dial-code'); // Get the dial code
+                    const flagUrl = `https://flagcdn.com/w20/${code.toLowerCase()}.png`;
+
+                    // Update hidden input with dial code
+                    $('#phone_code').val(dialCode).data('countrycode', code);
+
+                    // Update UI with selected country flag and dial code
+                    $('.selected-country').html(`
+                    <img src="${flagUrl}" class="selected-flag" alt="Selected country flag"> (+${dialCode})
+                `);
+                });
+
+                // Form submission code
+                $("#mainForm").on("submit", function(e) {
+                    e.preventDefault(); // Prevent default form submission
+
+                    // Clear any previous errors
+                    $("#errorMsg").addClass("d-none").html("");
+
+                    // Disable the submit button and show the loading spinner
+                    $('#sbtbtn')
+                        .prop('disabled', true)
+                        .html('<span class="spinner-border spinner-border-sm me-2 text-white" role="status" aria-hidden="true"></span>Processing...');
+
+                    // Gather form data
+                    const formData = {
+                        firstname: $("#firstname").val(),
+                        lastname: $("#lastname").val(),
+                        phone_code: $("#phone_code").val(),
+                        country_code: $("#phone_code").data("countrycode"), // Country code from data attribute
+                        phone: $("#phone").val(),
+                        email: $("#email").val(),
+                        dynamicFunnelName: $("input[name='dynamicFunnelName']").val()
+                    };
+
+                    // Send POST request
+                    $.ajax({
+                        url: "formsubmit.php", // Replace with your server endpoint
+                        type: "POST",
+                        data: formData,
+                        dataType: "json", // Automatically parse JSON response
+                        success: function(response) {
+                            // Reset button state
+                            $('#sbtbtn').prop('disabled', false).html("Register Now");
+
+                            if (response.status === "Success" && response.data) {
+                                // Handle successful response
+                                const redirectUrl = response.data.RedirectTo;
+                                window.location.href = redirectUrl;
+                            } else if (response.status === "Failed") {
+                                // Handle specific errors like "User Already Exists"
+                                if (typeof response.errors === "string") {
+                                    // If `errors` is a string
+                                    $("#errorMsg").removeClass("d-none").html(`<p>${response.errors}</p>`);
+                                } else if (typeof response.errors === "object") {
+                                    // If `errors` is an object with field-specific messages
+                                    let errorHtml = "<ul>";
+                                    $.each(response.errors, function(field, messages) {
+                                        if (Array.isArray(messages)) {
+                                            messages.forEach(message => {
+                                                errorHtml += `<li>${message}</li>`;
+                                            });
+                                        }
+                                    });
+                                    errorHtml += "</ul>";
+                                    $("#errorMsg").removeClass("d-none").html(errorHtml);
+                                }
+                            } else {
+                                // Generic error handling for unexpected responses
+                                $("#errorMsg").removeClass("d-none").html("<p>Unexpected response. Please try again later.</p>");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("XHR Object:", xhr);
+                            console.log("Status:", status);
+                            console.log("Error:", error);
+
+                            // Reset button state on AJAX error
+                            $('#sbtbtn').prop('disabled', false).html("Register Now");
+
+                            // Generic error message for network or server issues
+                            $("#errorMsg").removeClass("d-none").html("<p>Oops! Something went wrong. Please try again later.</p>");
+                        }
+
+                    });
+
+                });
+            });
+        </script>
+</body>
+
+</html>

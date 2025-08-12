@@ -1,0 +1,693 @@
+First Name: Ramesh
+Last Name: Patil
+Email: rameshp2p@gmail.com
+Area Code: 91
+Phone: 9839399291
+IP: 
+Date & Time: 2024-11-15 15:44:29
+API Response:
+{
+    "status": "Success",
+    "data": {
+        "RedirectTo": "https:\/\/tinyurl.com\/25z8nngf",
+        "LoginID": "428309324",
+        "Email": "rameshp2p@gmail.com",
+        "Password": "Ei4Aq1Qh",
+        "UserID": "27388477",
+        "BrandID": "2871",
+        "AccountID": "23148787"
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: Patil
+Email: rameshp2p@gmail.com
+Area Code: 91
+Phone: 9839399291
+IP: 
+Date & Time: 2024-11-15 15:44:35
+API Response:
+{
+    "status": "Failed",
+    "errors": "User Already Exists"
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:04:25
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.82.48",
+    "server": {
+        "date": "2024-12-13 10:34:27",
+        "httpCode": 400,
+        "executionTime": 0.005643129348754883
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:07:10
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.82.48",
+    "server": {
+        "date": "2024-12-13 10:37:11",
+        "httpCode": 400,
+        "executionTime": 0.005791902542114258
+    }
+}
+=================================================
+First Name: Vikas
+Last Name: gupta
+Email: vikas@gmail.com
+Area Code: 91
+Phone: 9849499292
+IP: ::1
+Date & Time: 2024-12-13 16:08:47
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.82.48",
+    "server": {
+        "date": "2024-12-13 10:38:48",
+        "httpCode": 400,
+        "executionTime": 0.004650115966796875
+    }
+}
+=================================================
+First Name: Vikas
+Last Name: gupta
+Email: vikas@gmail.com
+Area Code: 91
+Phone: 9849499292
+IP: ::1
+Date & Time: 2024-12-13 16:08:54
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.82.48",
+    "server": {
+        "date": "2024-12-13 10:38:55",
+        "httpCode": 400,
+        "executionTime": 0.004539966583251953
+    }
+}
+=================================================
+First Name: Vikas
+Last Name: gupta
+Email: vikas@gmail.com
+Area Code: 91
+Phone: 9849499292
+IP: ::1
+Date & Time: 2024-12-13 16:19:32
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.82.48",
+    "server": {
+        "date": "2024-12-13 10:49:33",
+        "httpCode": 400,
+        "executionTime": 0.004693031311035156
+    }
+}
+=================================================
+First Name: Vikas
+Last Name: gupta
+Email: vikas@gmail.com
+Area Code: 91
+Phone: 9849499292
+IP: ::1
+Date & Time: 2024-12-13 16:23:34
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 10:53:36",
+        "httpCode": 400,
+        "executionTime": 0.03335714340209961
+    }
+}
+=================================================
+First Name: Vikas
+Last Name: gupta
+Email: vikas@gmail.com
+Area Code: 91
+Phone: 9849499292
+IP: ::1
+Date & Time: 2024-12-13 16:24:07
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 10:54:09",
+        "httpCode": 400,
+        "executionTime": 0.025648117065429688
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:24:13
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 10:54:15",
+        "httpCode": 400,
+        "executionTime": 0.027029037475585938
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:25:07
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 10:55:09",
+        "httpCode": 400,
+        "executionTime": 0.023733854293823242
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:26:28
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 10:56:29",
+        "httpCode": 400,
+        "executionTime": 0.07934188842773438
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:27:10
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 10:57:11",
+        "httpCode": 400,
+        "executionTime": 0.02428889274597168
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:27:45
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 10:57:47",
+        "httpCode": 400,
+        "executionTime": 0.0297849178314209
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:32:13
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 11:02:15",
+        "httpCode": 400,
+        "executionTime": 0.07467412948608398
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:33:43
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 11:03:45",
+        "httpCode": 400,
+        "executionTime": 0.03131699562072754
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:34:01
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 11:04:03",
+        "httpCode": 400,
+        "executionTime": 0.02863597869873047
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: 223.233.82.48
+Date & Time: 2024-12-13 16:34:27
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 11:04:29",
+        "httpCode": 400,
+        "executionTime": 0.03258705139160156
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:36:50
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 11:06:52",
+        "httpCode": 400,
+        "executionTime": 0.02931690216064453
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:37:45
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 11:07:46",
+        "httpCode": 400,
+        "executionTime": 0.07358503341674805
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:39:23
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 11:09:24",
+        "httpCode": 400,
+        "executionTime": 0.03297901153564453
+    }
+}
+=================================================
+First Name: Rameshj
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:40:18
+API Response:
+{
+    "message": "You have reached 3 attempts for registration in the last 5 minutes",
+    "server": {
+        "date": "2024-12-13 11:10:20",
+        "httpCode": 400,
+        "executionTime": 0.02256488800048828
+    }
+}
+=================================================
+First Name: Rameshj
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-13 16:44:25
+API Response:
+{
+    "code": 30000,
+    "message": "Registration errors",
+    "errors": [
+        {
+            "code": 30003,
+            "message": "We can't locate you. (#6hjki)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 11:14:27",
+        "httpCode": 400,
+        "executionTime": 0.07469701766967773
+    }
+}
+=================================================
+First Name: Rameshj
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: 223.233.82.48
+Date & Time: 2024-12-13 16:44:37
+API Response:
+{
+    "code": 10000,
+    "message": "Validation errors",
+    "errors": [
+        {
+            "code": 10009,
+            "message": "Password must contain only letters and numbers. (#52hy)"
+        }
+    ],
+    "captcha": {
+        "count": 0
+    },
+    "server": {
+        "date": "2024-12-13 11:14:39",
+        "httpCode": 400,
+        "executionTime": 0.04347395896911621
+    }
+}
+=================================================
+First Name: Vikas
+Last Name: gupta
+Email: vikasws@gmail.com
+Area Code: 91
+Phone: 9849499494
+IP: 223.233.82.48
+Date & Time: 2024-12-13 16:45:18
+API Response:
+{
+    "details": {
+        "leadRequest": {
+            "ID": "EewxWKLyA4XoMQZG93zk5NR22jqlNbdvOa7nljp1Rq0rgVYPD"
+        },
+        "customerID": 102630871,
+        "advertiser": {
+            "name": "Broker",
+            "logo": "\/public\/assets\/images\/broker-logo.png"
+        },
+        "offer": {
+            "ID": "19",
+            "name": "General",
+            "hash": "t"
+        },
+        "postbacks": [],
+        "redirect": {
+            "url": "https:\/\/clckclcktrkr.com\/api\/v1\/brokers\/login\/redirect.php?signupID=EewxWKLyA4XoMQZG93zk5NR22jqlNbdvOa7nljp1Rq0rgVYPD"
+        }
+    },
+    "message": null,
+    "server": {
+        "date": "2024-12-13 11:15:22",
+        "httpCode": 200,
+        "executionTime": 2.362677812576294
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-17 21:29:41
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.81.141",
+    "server": {
+        "date": "2024-12-17 15:59:40",
+        "httpCode": 400,
+        "executionTime": 0.004867076873779297
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-17 21:30:36
+API Response:
+{
+    "message": "The IP is not whitelisted: 223.233.81.141",
+    "server": {
+        "date": "2024-12-17 16:00:34",
+        "httpCode": 400,
+        "executionTime": 0.0047261714935302734
+    }
+}
+=================================================
+First Name: Ramesh
+Last Name: chopde
+Email: ramesh@gmail.com
+Area Code: 91
+Phone: 999999999
+IP: ::1
+Date & Time: 2024-12-19 13:25:23
+API Response:
+{
+    "status": "Success",
+    "data": {
+        "RedirectTo": "https:\/\/tinyurl.com\/2yrtn6z4",
+        "LoginID": 9344484,
+        "Email": "ramesh@gmail.com",
+        "Password": "Zp2Nj6Ex",
+        "UserID": "28887193",
+        "BrandID": "4453",
+        "AccountID": "24489717"
+    }
+}
+=================================================
+Keyword: test
+First Name: test
+Last Name: 17jan
+Email: test1@gmail.com
+Area Code: 27
+Phone: 440370877
+IP: 196.250.192.84
+Date & Time: 2025-01-17 17:47:32
+API Response:
+{
+    "status": "Success",
+    "data": {
+        "RedirectTo": "https:\/\/tinyurl.com\/24ptqtdu",
+        "LoginID": "408e51bc-7909-4edc-ba1c-3a9068b9a76e",
+        "Email": "test1@gmail.com",
+        "Password": "Vb0He5Wb",
+        "UserID": "29524085",
+        "BrandID": "3803",
+        "AccountID": "24887837"
+    }
+}
+=================================================
+Keyword: test
+First Name: test
+Last Name: 17jan
+Email: test1@gmail.com
+Area Code: 27
+Phone: 440370877
+IP: 196.250.192.84
+Date & Time: 2025-01-17 17:47:38
+API Response:
+{
+    "status": "Failed",
+    "errors": "User Already Exists"
+}
+=================================================
+Keyword: test2
+First Name: test2
+Last Name: jan17
+Email: test2@gmail.com
+Area Code: 56
+Phone: 7027678993
+IP: 207.248.1.36
+Date & Time: 2025-01-17 17:48:17
+API Response:
+{
+    "status": "Failed",
+    "errors": "Country is not allowed"
+}
+=================================================
+Keyword: test3
+First Name: test3
+Last Name: jan
+Email: test3@gmail.com
+Area Code: 33
+Phone: 0676642164
+IP: 92.170.237.23
+Date & Time: 2025-01-17 17:50:36
+API Response:
+{
+    "status": "Success",
+    "data": {
+        "RedirectTo": "https:\/\/tinyurl.com\/2bksra4o",
+        "LoginID": "b8ac0a8936d4bac9405719c53de7a902",
+        "Email": "test3@gmail.com",
+        "Password": "Ja4Xu7Vd",
+        "UserID": "29524631",
+        "BrandID": "4355",
+        "AccountID": "24888315"
+    }
+}
+=================================================
+Keyword: testonline
+First Name: Judith
+Last Name: Luna
+Email: judyluna955@gmail.com
+Area Code: 33
+Phone: 768080198
+IP: 86.238.79.74
+Date & Time: 2025-07-21 15:07:05
+API Response:
+{
+    "status": "Success",
+    "data": {
+        "RedirectTo": "https:\/\/tinyurl.com\/294pqxrc",
+        "LoginID": "fead353f-1666-f011-9696-005056b186fc",
+        "Email": "judyluna955@gmail.com",
+        "Password": "Jv1Bl9Mj",
+        "UserID": "34910853",
+        "BrandID": "4587",
+        "AccountID": "28549795"
+    }
+}
+=================================================
